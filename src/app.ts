@@ -4,6 +4,8 @@ import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 
+import logger, { expressLogger } from './logger';
+
 import routes from './routes';
 import AppError from './errors/AppError';
 
@@ -13,6 +15,7 @@ createConnection();
 const app = express();
 
 app.use(express.json());
+app.use(expressLogger);
 app.use(routes);
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
@@ -23,7 +26,7 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
     });
   }
 
-  console.error(err);
+  logger.error(err);
 
   return response.status(500).json({
     status: 'error',

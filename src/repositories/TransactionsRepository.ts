@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 
 import Transaction from '../models/Transaction';
+import logger from '../logger';
 
 interface Balance {
   income: number;
@@ -25,9 +26,14 @@ class TransactionsRepository extends Repository<Transaction> {
       },
     );
 
+    const total = balance.income - balance.outcome;
+    
+    logger.child({ balance }).debug("test from TransactionsRepository#getBalance");
+    logger.child({ total }).info("test2 from TransactionsRepository#getBalance");
+
     return {
       ...balance,
-      total: balance.income - balance.outcome,
+      total,
     };
   }
 }
